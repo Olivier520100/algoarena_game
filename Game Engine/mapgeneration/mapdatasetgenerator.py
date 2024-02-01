@@ -19,8 +19,8 @@ def stringgenerate():
     return output
 class Map():
     def __init__(self):
-        self.mapsizex = 300
-        self.mapsizey = 200
+        self.mapsizex = 100
+        self.mapsizey = 60
         
 
     def generateMapRnd(self):
@@ -29,7 +29,7 @@ class Map():
         noise = self.noiselayer(self.mapsizex,self.mapsizey)
 
         i = 0
-        while (i < 100):
+        while (i < 75):
             newnoise = self.noiselayer(self.mapsizex,self.mapsizey)
             noise = noise + newnoise
             i+=1
@@ -96,8 +96,8 @@ class Map():
         
         #function format: f(x,y) = a1*cos((2pi/b1)x + c1+ a2*cos((2pi/b2)x + c2)) + d
         
-        noisex = 200
-        noisey = 200
+        noisex = 250
+        noisey = 250
         noisemap = np.zeros([mpsizey, mpsizex])
         a1 = random.random()*4+1
         a2 = random.random()*4+1

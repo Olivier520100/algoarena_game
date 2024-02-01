@@ -6,8 +6,8 @@ import math
 
 class Map():
     def __init__(self):
-        self.mapsizex = 300
-        self.mapsizey = 200
+        self.mapsizex = 100
+        self.mapsizey = 60
         # Terrain types
         # 1 = grass
         # 2 = sand
@@ -74,8 +74,7 @@ class Map():
         #function format: f(x,y) = a1*cos((2pi/b1)x + c1+ a2*cos((2pi/b2)x + c2)) + d
         
 
-        defaultterrainx = 100
-        defaultterrainy = 60
+    
         noisemap = np.zeros([mpsizey, mpsizex])
         a1 = random.random()*5+1
         a2 = random.random()*5+1
