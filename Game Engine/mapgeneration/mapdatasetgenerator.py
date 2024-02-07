@@ -180,7 +180,7 @@ class Index:
         strname = stringgenerate()
         file_path = "good/" + strname + ".png"  # Adjust the path as needed
         im = Image.fromarray(imageoutput)
-        np.save("good/" + strname + ".npy", self.)
+        np.save("rawgoodmapdata/" + strname + ".npy", self.gamemap.rawmapdata)
         im.save(file_path)
 
         # Generate and display the next image
@@ -191,7 +191,7 @@ class Index:
     def bad(self, event):
         # Save the current image displayed in the aximage
         imageoutput = np.array(self.aximage.get_array())
-        file_path = "bad/" + stringgenerate() + ".npy"  # Adjust the path as needed
+        file_path = "bad/" + stringgenerate() + ".png"  # Adjust the path as needed
         im = Image.fromarray(imageoutput)
         im.save(file_path)
         # Generate and display the next image
