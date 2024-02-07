@@ -9,19 +9,31 @@ import sys
 
 class Map():
     def __init__(self):
-        pass
+        self.terrainmap = np.load("./gamemaps/betamap1.npy")
+        self.mapsizex = (self.terrainmap).shape[1]
+        self.mapsizey = (self.terrainmap).shape[0]
+
+        print(self.terrainmap)
     
     def showMap(self):
 
         # Terrain types
-        # 1 = grass
+        # 1 = water
         # 2 = sand
-        # 3 = rock 
-        # 4 = water
+        # 3 = grass1 
+        # 4 = grass2
+        # 5 = stone1
+        # 6 = stone2
+        # 7 = stone3
+        # 8 = stone4
         
         desertcolor = np.array([255,255,0])
         grasscolor = np.array([0,255,0])
-        stonecolor = np.array([128,128,128])
+        deepgrasscolor = np.array([0,200,0])
+        stonecolor1 = np.array([128,128,128])
+        stonecolor2 = np.array([160,160,160])
+        stonecolor3 = np.array([180,180,180])
+        stonecolor4 = np.array([200,200,200])
         watercolor = np.array([0,0,255])
 
         imagearray = np.zeros([self.mapsizey, self.mapsizex,3])
@@ -29,83 +41,29 @@ class Map():
         currenty = 0
         while currenty < (self.terrainmap).shape[0]:
             
-            if self.terrainmap[currenty,currentx] == 1:
+            if self.terrainmap[currenty,currentx] <= 1:
                 imagearray[currenty,currentx,:] = watercolor
-            elif self.terrainmap[currenty,currentx] == 2:
+            elif self.terrainmap[currenty,currentx] <= 2:
+                imagearray[currenty,currentx,:] = desertcolor
+            elif self.terrainmap[currenty,currentx] <= 3:
                 imagearray[currenty,currentx,:] = grasscolor
-            elif self.terrainmap[currenty,currentx] == 3:
-                imagearray[currenty,currentx,:] = grasscolor
-            elif self.terrainmap[currenty,currentx] == 4:
-                imagearray[currenty,currentx,:] = stonecolor
+            elif self.terrainmap[currenty,currentx] <= 4:
+                imagearray[currenty,currentx,:] = deepgrasscolor
+            elif self.terrainmap[currenty,currentx] <= 5:
+                imagearray[currenty,currentx,:] = stonecolor1
+            elif self.terrainmap[currenty,currentx] <= 6:
+                imagearray[currenty,currentx,:] = stonecolor2
+            elif self.terrainmap[currenty,currentx] <= 7:
+                imagearray[currenty,currentx,:] = stonecolor3
+            elif self.terrainmap[currenty,currentx] <= 8:
+                imagearray[currenty,currentx,:] = stonecolor4
             currentx+=1
             if currentx==(self.terrainmap).shape[1]:
                 currentx=0
                 currenty+=1
 
-
         plt.imshow(imagearray.astype('uint8'))
         plt.show()
-
-    def noisefunction(self,a1,a2,b1,b2,c1,c2,d,x,y):
-        return a1*math.cos((2*math.pi/b1)*x + c1) + a2*math.cos((2*math.pi/b2)*y + c2) + d
-    
-    def noiselayer(self,mpsizex, mpsizey):
-        
-        #function format: f(x,y) = a1*cos((2pi/b1)x + c1+ a2*cos((2pi/b2)x + c2)) + d
-        
-
-    
-        noisemap = np.zeros([mpsizey, mpsizex])
-        a1 = random.random()*5+1
-        a2 = random.random()*5+1
-        b1 = random.random()*(self.mapsizex-self.mapsizex/2)+self.mapsizex/2
-        b2 = random.random()*(self.mapsizex-self.mapsizey/2)+self.mapsizey/2
-        c1 = random.random()*self.mapsizex
-        c2 = random.random()*self.mapsizey
-        d=random.random()*5+1
-        currentx = 0
-        currenty = 0
-        while currenty < mpsizey:
-            noisemap[currenty,currentx] = self.noisefunction(a1,a2,b1,b2,c1,c2,d,currenty,currentx)
-            currentx+=1
-            if currentx==(mpsizex):
-                currentx=0
-                currenty+=1
-
-        return noisemap
-
-
-    def noiserefactor(self,noisearray, max):
-
-        currentmax = noisearray.max()
-        currentmin = noisearray.min()
-        difference = currentmax - currentmin
-        currentx = 0
-        currenty = 0
-        refactorarray = np.zeros([noisearray.shape[0],noisearray.shape[1]])
-        while currenty < noisearray.shape[0]:
-            changeto = math.ceil(((noisearray[currenty,currentx]-currentmin)/difference)*max)
-            if changeto == 0:
-                refactorarray[currenty,currentx] = 1
-            else: 
-                refactorarray[currenty,currentx] = changeto
-            currentx+=1
-            if currentx==(noisearray.shape[1]):
-                currentx=0
-                currenty+=1
-
-        return refactorarray
-            
-        
-
-        
-        
-
-
-            
-
-    
-        
 
 class Game():
     def __init__(self):
