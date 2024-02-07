@@ -3,33 +3,14 @@ from PIL import Image
 from matplotlib import pyplot as plt
 import random 
 import math
+import sys
 
 
 
 class Map():
     def __init__(self):
-        self.mapsizex = 100
-        self.mapsizey = 60
-        # Terrain types
-        # 1 = grass
-        # 2 = sand
-        # 3 = rock 
-        # 4 = water
-        
-
-        self.terrainmap = self.generateMap(self.mapsizex,self.mapsizey)
-
-    def generateMap(self,mpsizex,mpsizey):
-        noise = self.noiselayer(mpsizex,mpsizey)
-
-        i = 0
-        while (i < 100):
-            newnoise = self.noiselayer(self.mapsizex,self.mapsizey)
-            noise = noise + newnoise
-            i+=1
-        
-        return self.noiserefactor(noise,4)
-
+        pass
+    
     def showMap(self):
 
         # Terrain types
@@ -368,3 +349,36 @@ class University(Building):
         super().__init__()
         self.x=x
         self.y=y
+        
+        
+        
+        
+## game arrays
+
+map_units=np.zeros((90,160))
+map_terrain=np.zeros((90,160))
+map_building=np.zeros((90,160))
+
+
+def main():
+    np.set_printoptions(threshold=sys.maxsize)
+    
+    
+    while(True):
+        print(map_units)
+        
+        
+        ##print(map_terrain)
+        ##print(map_building)
+        
+        
+        
+    
+    
+    
+    
+    
+    
+
+if __name__ == "__main__":
+    main()
