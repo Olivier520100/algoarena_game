@@ -4,6 +4,8 @@ from matplotlib import pyplot as plt
 import random 
 import math
 
+
+
 class Map():
     def __init__(self):
         self.mapsizex = 100
@@ -16,9 +18,6 @@ class Map():
         
 
         self.terrainmap = self.generateMap(self.mapsizex,self.mapsizey)
-        # self.terrainmap[5,5] = 4
-        # self.terrainmap.fill(1)
-        # self.terrainmap[5,5] = 4
 
     def generateMap(self,mpsizex,mpsizey):
         noise = self.noiselayer(mpsizex,mpsizey)

@@ -17,10 +17,12 @@ def stringgenerate():
         output+=alphabetsplit[random.randint(0,25)]
         i+=1
     return output
+
 class Map():
     def __init__(self):
-        self.mapsizex = 100
-        self.mapsizey = 60
+        self.mapsizex = 160
+        self.mapsizey = 90
+        self.rawmapdata = np.zeros([self.mapsizey,self.mapsizex])
         
 
     def generateMapRnd(self):
@@ -47,10 +49,14 @@ class Map():
     def showMap(self,terrainmap):
 
         # Terrain types
-        # 1 = grass
+        # 1 = water
         # 2 = sand
-        # 3 = rock 
-        # 4 = water
+        # 3 = grass1 
+        # 4 = grass2
+        # 5 = stone1
+        # 6 = stone2
+        # 7 = stone3
+        # 8 = stone4
         
         desertcolor = np.array([255,255,0])
         grasscolor = np.array([0,255,0])
@@ -68,20 +74,29 @@ class Map():
             
             if terrainmap[currenty,currentx] <= 20:
                 imagearray[currenty,currentx,:] = watercolor
+                self.rawmapdata[currenty,currentx] = 1
             elif terrainmap[currenty,currentx] <= 23:
                 imagearray[currenty,currentx,:] = desertcolor
+                self.rawmapdata[currenty,currentx] = 2
+
             elif terrainmap[currenty,currentx] <= 45:
                 imagearray[currenty,currentx,:] = grasscolor
+                self.rawmapdata[currenty,currentx] = 3
             elif terrainmap[currenty,currentx] <= 70:
                 imagearray[currenty,currentx,:] = deepgrasscolor
+                self.rawmapdata[currenty,currentx] = 4
             elif terrainmap[currenty,currentx] <= 85:
                 imagearray[currenty,currentx,:] = stonecolor1
+                self.rawmapdata[currenty,currentx] = 5
             elif terrainmap[currenty,currentx] <= 92:
                 imagearray[currenty,currentx,:] = stonecolor2
+                self.rawmapdata[currenty,currentx] = 6
             elif terrainmap[currenty,currentx] <= 97:
                 imagearray[currenty,currentx,:] = stonecolor3
+                self.rawmapdata[currenty,currentx] = 7
             elif terrainmap[currenty,currentx] <= 100:
                 imagearray[currenty,currentx,:] = stonecolor4
+                self.rawmapdata[currenty,currentx] = 8
             currentx+=1
             if currentx==(terrainmap).shape[1]:
                 currentx=0
@@ -162,8 +177,11 @@ class Index:
     def good(self, event):
         # Save the current image displayed in the aximage
         imageoutput = np.array(self.aximage.get_array())
-        file_path = "good/" + stringgenerate() + ".npy"  # Adjust the path as needed
-        np.save(file_path, imageoutput)
+        strname = stringgenerate()
+        file_path = "good/" + strname + ".png"  # Adjust the path as needed
+        im = Image.fromarray(imageoutput)
+        np.save("good/" + strname + ".npy", self.)
+        im.save(file_path)
 
         # Generate and display the next image
         new_imagearray = self.gamemap.generateMapImage()
@@ -174,8 +192,8 @@ class Index:
         # Save the current image displayed in the aximage
         imageoutput = np.array(self.aximage.get_array())
         file_path = "bad/" + stringgenerate() + ".npy"  # Adjust the path as needed
-        np.save(file_path, imageoutput)
-
+        im = Image.fromarray(imageoutput)
+        im.save(file_path)
         # Generate and display the next image
         new_imagearray = self.gamemap.generateMapImage()
         self.aximage.set_data(new_imagearray.astype('uint8'))
