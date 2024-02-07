@@ -4,6 +4,7 @@ from matplotlib import pyplot as plt
 import random 
 import math
 import sys
+import numpy
 
 
 
@@ -104,246 +105,226 @@ class Team():
 # 
 # GlassCannon:   Inherits from CombatUnits, a specialized combat unit with low health, high damage, speed, cooldown, and bulletSpeed.
     
+import numpy as np
+import sys
+
 class GameObject():
     defaultHealth = 10
-    x=0
-    y=0
-    canAttack=False
+    x = 0
+    y = 0
+    canAttack = False
+    count = 0  # Class variable to count instances
+
     def __init__(self):
-        self.health=self.defaultHealth
+        self.health = self.defaultHealth
         
+
 
 class Units(GameObject):
-    defaultDamage=1
-    defaultSpeed=1
-    defaultCooldown=1
+    defaultDamage = 1
+    defaultSpeed = 1
+    defaultCooldown = 1
+
     def __init__(self):
         super().__init__()
-        self.canAttack=True
-        self.damage=self.defaultDamage
-        self.speed=self.defaultSpeed
-        self.cooldown=self.defaultCooldown
+        self.canAttack = True
+        self.damage = self.defaultDamage
+        self.speed = self.defaultSpeed
+        self.cooldown = self.defaultCooldown
+
 
 class UtilityUnits(Units):
-    def __init__(self):
-        super().__init__()
-        
+    pass
+
 
 class Worker(UtilityUnits):
-    def __init__(self,x,y):
+    def __init__(self, x, y):
         super().__init__()
-        self.x=x
-        self.y=y
+        self.x = x
+        self.y = y
         self.health = 10
         self.damage = 1
         self.speed = 3
-        self.cooldown= 2
+        self.cooldown = 2
+
 
 class Scout(UtilityUnits):
-    def __init__(self,x,y):
+    def __init__(self, x, y):
         super().__init__()
-        self.x=x
-        self.y=y
-        self.canAttack=False
+        self.x = x
+        self.y = y
+        self.canAttack = False
         self.health = 10
         self.damage = 0
         self.speed = 10
 
 
-        
 class CombatUnits(GameObject):
-    def __init__(self):
-        super().__init__()
+    pass
 
 
 class Melee(CombatUnits):
-    def __init__(self,x,y):
+    def __init__(self, x, y):
         super().__init__()
-        self.x=x
-        self.y=y
+        self.x = x
+        self.y = y
         self.health = 20
         self.damage = 5
         self.speed = 5
-        self.cooldown= 2
+        self.cooldown = 2
 
 
 class Tank(CombatUnits):
-    def __init__(self,x,y):
+    def __init__(self, x, y):
         super().__init__()
-        self.x=x
-        self.y=y
+        self.x = x
+        self.y = y
         self.health = 40
         self.damage = 5
         self.speed = 3
-        self.cooldown= 3
+        self.cooldown = 3
 
 
 class Archer(CombatUnits):
-    def __init__(self,x,y):
+    def __init__(self, x, y):
         super().__init__()
-        self.x=x
-        self.y=y
+        self.x = x
+        self.y = y
         self.health = 15
         self.damage = 5
-        self.speed = 5   
-        self.cooldown= 2
-        self.bulletSpeed=6
+        self.speed = 5
+        self.cooldown = 2
+        self.bulletSpeed = 6
 
-class GlassCannon(CombatUnits):       
-    def __init__(self,x,y):
+
+class GlassCannon(CombatUnits):
+    def __init__(self, x, y):
         super().__init__()
-        self.x=x
-        self.y=y
-        self.health=5
-        self.damage=15
-        self.speed=10
-        self.cooldown= 1
-        self.bulletSpeed=10
+        self.x = x
+        self.y = y
+        self.health = 5
+        self.damage = 15
+        self.speed = 10
+        self.cooldown = 1
+        self.bulletSpeed = 10
 
-# Class Hierarchy - Buildings:
-# ----------------------------
-#                        GameObject
-#                            |
-#                       Building
-#                   /  |  |   |   \
-#                Castle TrainingCamp Mine LumberMill Farm University
-# 
-# Building:      Inherits from GameObject, represents buildings with a default size.
-# 
-# Castle:        Inherits from Building, a specific type of building with a custom size.
-# 
-# TrainingCamp:  Inherits from Building, a building that can create units.
-# 
-# Mine:          Inherits from Building, a building that can generate resources.
-# 
-# LumberMill:    Inherits from Building, a building that can generate resources.
-# 
-# Farm:          Inherits from Building, a building that can generate resources.
-# 
-# University:    Inherits from Building, a building that can generate resources.
-        
-        
+
 class Building(GameObject):
-    size=3
-    x=0
-    y=0
+    size = 3
+    x = 0
+    y = 0
+
     def __init__(self):
-        self.size=self.size
-        self.x=self.x
-        self.y=self.y
+        self.size = self.size
+        self.x = self.x
+        self.y = self.y
         super().__init__()
 
-#je ne sais pas encore la position des teams       
+
 class Castle(Building):
     def __init__(self, red):
         if red:
-            self.x=0
-            self.y=0
-
+            self.x = 0
+            self.y = 0
         else:
-         
-            self.x=50
-            self.y=50 
-        
-        self.size=6
+            self.x = 50
+            self.y = 50
+        self.size = 6
         super().__init__()
 
-    #UtilyUnits
-    def CreateWorker(x,y):
-        return Worker(x,y)
-    def CreateScout(x,y):
-        return Scout(x,y)
-        
-    #Buildings
-    def CreateTrainingCamp(self,x,y):
-        return TrainingCamp(x,y)
-    def CreateMine(self,x,y):
-        return Mine(x,y)
-    def CreateLumberMill(self,x,y):
-        return LumberMill(x,y)
-    def CreateFarm(self,x,y):
-        return Farm(x,y)
-    def CreateUniversity(self,x,y):
-        return University(x,y)
-    
+    def CreateWorker(x, y):
+        return Worker(x, y)
+
+    def CreateScout(x, y):
+        return Scout(x, y)
+
+    def CreateTrainingCamp(self, x, y):
+        return TrainingCamp(x, y)
+
+    def CreateMine(self, x, y):
+        return Mine(x, y)
+
+    def CreateLumberMill(self, x, y):
+        return LumberMill(x, y)
+
+    def CreateFarm(self, x, y):
+        return Farm(x, y)
+
+    def CreateUniversity(self, x, y):
+        return University(x, y)
+
+
 class TrainingCamp(Building):
-    def __init__(self,x,y):
+    def __init__(self, x, y):
         super().__init__()
-        self.x=x
-        self.y=y
+        self.x = x
+        self.y = y
 
     def CreateMelee(self):
-        return Melee(self.x,self.y)
+        return Melee(self.x, self.y)
+
     def CreateTank(self):
-        return Tank(self.x,self.y)
+        return Tank(self.x, self.y)
+
     def CreateArcher(self):
-        return Archer(self.x,self.y)
+        return Archer(self.x, self.y)
+
     def CreateGlassCannon(self):
-        return GlassCannon(self.x,self.y)
-   
-    
+        return GlassCannon(self.x, self.y)
 
 
 class Mine(Building):
-    def __init__(self,x,y):
+    def __init__(self, x, y):
         super().__init__()
-        self.x=x
-        self.y=y
+        self.x = x
+        self.y = y
+
 
 class LumberMill(Building):
-    def __init__(self,x,y):
+    def __init__(self, x, y):
         super().__init__()
-        self.x=x
-        self.y=y
+        self.x = x
+        self.y = y
+
 
 class Farm(Building):
-    def __init__(self,x,y):
+    def __init__(self, x, y):
         super().__init__()
-        self.x=x
-        self.y=y
+        self.x = x
+        self.y = y
+
 
 class University(Building):
-    def __init__(self,x,y):
+    def __init__(self, x, y):
         super().__init__()
-        self.x=x
-        self.y=y
-        
-        
-        
-        
-## game arrays
-
-
+        self.x = x
+        self.y = y
 
 
 def main():
     np.set_printoptions(threshold=sys.maxsize)
-    y=0
-    while y<1:
-        
-        
+    y = 0
+    while y < 1:
         melee_unit = Melee(x=10, y=20)
         tank_unit = Tank(x=30, y=40)
         archer_unit = Archer(x=50, y=60)
         glass_cannon_unit = GlassCannon(x=70, y=80)
 
-        
         units_list = [melee_unit, tank_unit, archer_unit, glass_cannon_unit]
         for unit in units_list:
             if 0 <= unit.y < map_units.shape[0] and 0 <= unit.x < map_units.shape[1]:
-                map_units[unit.y, unit.x] = 1
+                map_units[unit.y, unit.x] = unit  # Store the unit ID in map_units
             else:
                 print(f"Warning: Unit position ({unit.y}, {unit.x}) is out of bounds.")
 
-        # Print the map_units array with proper formatting
-        for row in map_units:
-            print(''.join(['1' if col == 1 else '0' for col in row]))
-            
-        y+=1
+        
+        print(map_units)
+        
+        y += 1
+
 
 if __name__ == "__main__":
-    
-    map_units=np.zeros((90,160))
-    map_terrain=np.zeros((90,160))
-    map_building=np.zeros((90,160))
+    map_units = np.zeros((90, 160), dtype=object)
+    map_terrain = np.zeros((90, 160))
+    map_building = np.zeros((90, 160))
     main()
