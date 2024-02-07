@@ -355,30 +355,37 @@ class University(Building):
         
 ## game arrays
 
-map_units=np.zeros((90,160))
-map_terrain=np.zeros((90,160))
-map_building=np.zeros((90,160))
+
 
 
 def main():
     np.set_printoptions(threshold=sys.maxsize)
-    
-    
-    while(True):
-        print(map_units)
+    y=0
+    while y<1:
         
         
-        ##print(map_terrain)
-        ##print(map_building)
+        melee_unit = Melee(x=10, y=20)
+        tank_unit = Tank(x=30, y=40)
+        archer_unit = Archer(x=50, y=60)
+        glass_cannon_unit = GlassCannon(x=70, y=80)
+
         
-        
-        
-    
-    
-    
-    
-    
-    
+        units_list = [melee_unit, tank_unit, archer_unit, glass_cannon_unit]
+        for unit in units_list:
+            if 0 <= unit.y < map_units.shape[0] and 0 <= unit.x < map_units.shape[1]:
+                map_units[unit.y, unit.x] = 1
+            else:
+                print(f"Warning: Unit position ({unit.y}, {unit.x}) is out of bounds.")
+
+        # Print the map_units array with proper formatting
+        for row in map_units:
+            print(''.join(['1' if col == 1 else '0' for col in row]))
+            
+        y+=1
 
 if __name__ == "__main__":
+    
+    map_units=np.zeros((90,160))
+    map_terrain=np.zeros((90,160))
+    map_building=np.zeros((90,160))
     main()
