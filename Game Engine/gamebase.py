@@ -9,7 +9,7 @@ import sys
 
 class Map():
     def __init__(self):
-        self.terrainmap = np.load("./gamemaps/betamap1.npy")
+        self.terrainmap = np.load("./gamemaps/betamap2.npy")
         self.mapsizex = (self.terrainmap).shape[1]
         self.mapsizey = (self.terrainmap).shape[0]
 
