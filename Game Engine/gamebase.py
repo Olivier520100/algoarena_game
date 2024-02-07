@@ -3,14 +3,15 @@ from PIL import Image
 from matplotlib import pyplot as plt
 import random 
 import math
+import numpy as np
 import sys
-import numpy
+
 
 
 
 class Map():
     def __init__(self):
-        self.terrainmap = np.load("./gamemaps/betamap2.npy")
+        self.terrainmap = np.load("Game Engine/gamemaps/betamap2.npy")
         self.mapsizex = (self.terrainmap).shape[1]
         self.mapsizey = (self.terrainmap).shape[0]
 
@@ -104,42 +105,63 @@ class Team():
 # Archer:        Inherits from CombatUnits, a ranged combat unit with custom health, damage, speed, cooldown, and bulletSpeed.
 # 
 # GlassCannon:   Inherits from CombatUnits, a specialized combat unit with low health, high damage, speed, cooldown, and bulletSpeed.
-    
-import numpy as np
-import sys
 
-class GameObject():
+class GameObject:
     defaultHealth = 10
     x = 0
     y = 0
     canAttack = False
-    count = 0  # Class variable to count instances
+    dead=False
+    
 
-    def __init__(self):
+    def __init__(self, team):
         self.health = self.defaultHealth
+        self.team = team
         
+    
+    def lose_health(self,damage):
+        self.health-=damage
+        if(self.health<=0):
+            dead=True
+    
+    def add_to_queue(self,action):
+        self.action_queue.append(action)
+    
+    def execute_next_action(self):
+        """Execute the next action in the queue, if any."""
+        if self.action_queue:
+            action = self.action_queue.pop(0)
+            
+            # Here, add code to perform the action
+        else:
+            print("no actions to execute.")
+            
+
+
 
 
 class Units(GameObject):
     defaultDamage = 1
     defaultSpeed = 1
     defaultCooldown = 1
-
-    def __init__(self):
-        super().__init__()
+    
+    def __init__(self, team):
+        super().__init__(team)
         self.canAttack = True
         self.damage = self.defaultDamage
         self.speed = self.defaultSpeed
         self.cooldown = self.defaultCooldown
-
-
+        self.action_queue = []
+        
+        
+    
+                         
 class UtilityUnits(Units):
     pass
 
-
 class Worker(UtilityUnits):
-    def __init__(self, x, y):
-        super().__init__()
+    def __init__(self, x, y, team):
+        super().__init__(team)
         self.x = x
         self.y = y
         self.health = 10
@@ -147,10 +169,9 @@ class Worker(UtilityUnits):
         self.speed = 3
         self.cooldown = 2
 
-
 class Scout(UtilityUnits):
-    def __init__(self, x, y):
-        super().__init__()
+    def __init__(self, x, y, team):
+        super().__init__(team)
         self.x = x
         self.y = y
         self.canAttack = False
@@ -158,14 +179,12 @@ class Scout(UtilityUnits):
         self.damage = 0
         self.speed = 10
 
-
 class CombatUnits(GameObject):
     pass
 
-
 class Melee(CombatUnits):
-    def __init__(self, x, y):
-        super().__init__()
+    def __init__(self, x, y, team):
+        super().__init__(team)
         self.x = x
         self.y = y
         self.health = 20
@@ -173,10 +192,9 @@ class Melee(CombatUnits):
         self.speed = 5
         self.cooldown = 2
 
-
 class Tank(CombatUnits):
-    def __init__(self, x, y):
-        super().__init__()
+    def __init__(self, x, y, team):
+        super().__init__(team)
         self.x = x
         self.y = y
         self.health = 40
@@ -184,10 +202,9 @@ class Tank(CombatUnits):
         self.speed = 3
         self.cooldown = 3
 
-
 class Archer(CombatUnits):
-    def __init__(self, x, y):
-        super().__init__()
+    def __init__(self, x, y, team):
+        super().__init__(team)
         self.x = x
         self.y = y
         self.health = 15
@@ -196,10 +213,9 @@ class Archer(CombatUnits):
         self.cooldown = 2
         self.bulletSpeed = 6
 
-
 class GlassCannon(CombatUnits):
-    def __init__(self, x, y):
-        super().__init__()
+    def __init__(self, x, y, team):
+        super().__init__(team)
         self.x = x
         self.y = y
         self.health = 5
@@ -208,18 +224,17 @@ class GlassCannon(CombatUnits):
         self.cooldown = 1
         self.bulletSpeed = 10
 
-
 class Building(GameObject):
     size = 3
     x = 0
     y = 0
 
     def __init__(self):
+        super().__init__()
         self.size = self.size
         self.x = self.x
         self.y = self.y
-        super().__init__()
-
+        
 
 class Castle(Building):
     def __init__(self, red):
@@ -232,99 +247,56 @@ class Castle(Building):
         self.size = 6
         super().__init__()
 
-    def CreateWorker(x, y):
-        return Worker(x, y)
+    def CreateWorker(x, y, team):
+        return Worker(x, y, team)
 
-    def CreateScout(x, y):
-        return Scout(x, y)
-
-    def CreateTrainingCamp(self, x, y):
-        return TrainingCamp(x, y)
-
-    def CreateMine(self, x, y):
-        return Mine(x, y)
-
-    def CreateLumberMill(self, x, y):
-        return LumberMill(x, y)
-
-    def CreateFarm(self, x, y):
-        return Farm(x, y)
-
-    def CreateUniversity(self, x, y):
-        return University(x, y)
+    def CreateScout(x, y, team):
+        return Scout(x, y, team)
 
 
-class TrainingCamp(Building):
-    def __init__(self, x, y):
-        super().__init__()
-        self.x = x
-        self.y = y
-
-    def CreateMelee(self):
-        return Melee(self.x, self.y)
-
-    def CreateTank(self):
-        return Tank(self.x, self.y)
-
-    def CreateArcher(self):
-        return Archer(self.x, self.y)
-
-    def CreateGlassCannon(self):
-        return GlassCannon(self.x, self.y)
 
 
-class Mine(Building):
-    def __init__(self, x, y):
-        super().__init__()
-        self.x = x
-        self.y = y
-
-
-class LumberMill(Building):
-    def __init__(self, x, y):
-        super().__init__()
-        self.x = x
-        self.y = y
-
-
-class Farm(Building):
-    def __init__(self, x, y):
-        super().__init__()
-        self.x = x
-        self.y = y
-
-
-class University(Building):
-    def __init__(self, x, y):
-        super().__init__()
-        self.x = x
-        self.y = y
 
 
 def main():
     np.set_printoptions(threshold=sys.maxsize)
-    y = 0
-    while y < 1:
-        melee_unit = Melee(x=10, y=20)
-        tank_unit = Tank(x=30, y=40)
-        archer_unit = Archer(x=50, y=60)
-        glass_cannon_unit = GlassCannon(x=70, y=80)
 
-        units_list = [melee_unit, tank_unit, archer_unit, glass_cannon_unit]
-        for unit in units_list:
-            if 0 <= unit.y < map_units.shape[0] and 0 <= unit.x < map_units.shape[1]:
-                map_units[unit.y, unit.x] = unit  # Store the unit ID in map_units
-            else:
-                print(f"Warning: Unit position ({unit.y}, {unit.x}) is out of bounds.")
 
+   
+
+
+
+class Game:
+    def __init__(self):
+        self.map_units = np.full((90, 160), None)
+        self.map_terrain = np.zeros((90, 160), dtype=int)
+        self.red_units = []
+        self.blue_units = []
+
+    def read_ai_input(self, ai_file):
+        pass
+
+    def update_game_state(self):
+        pass
         
-        print(map_units)
-        
-        y += 1
 
+    def main_loop(self, red_ai_file, blue_ai_file):
+        #temp
+        game_over=False
+        #temp
+        while not game_over:
+            # Read and execute commands for red team
+            red_commands = self.read_ai_input(red_ai_file)
+            
+
+            # Read and execute commands for blue team
+            blue_commands = self.read_ai_input(blue_ai_file)
+            
+
+            # Update game state
+            self.update_game_state()
 
 if __name__ == "__main__":
-    map_units = np.zeros((90, 160), dtype=object)
-    map_terrain = np.zeros((90, 160))
-    map_building = np.zeros((90, 160))
     main()
+    game = Game()
+    game.main_loop("red_ai.txt", "blue_ai.txt")
