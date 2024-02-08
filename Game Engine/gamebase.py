@@ -68,7 +68,6 @@ class Map():
 
 class Game():
     def __init__(self):
-        
         pass
 
 class Team():
@@ -105,8 +104,6 @@ class Team():
 # 
 # GlassCannon:   Inherits from CombatUnits, a specialized combat unit with low health, high damage, speed, cooldown, and bulletSpeed.
     
-import numpy as np
-import sys
 
 class GameObject():
     defaultHealth = 10
@@ -136,7 +133,6 @@ class Units(GameObject):
 class UtilityUnits(Units):
     pass
 
-
 class Worker(UtilityUnits):
     def __init__(self, x, y):
         super().__init__()
@@ -147,7 +143,6 @@ class Worker(UtilityUnits):
         self.speed = 3
         self.cooldown = 2
 
-
 class Scout(UtilityUnits):
     def __init__(self, x, y):
         super().__init__()
@@ -157,7 +152,6 @@ class Scout(UtilityUnits):
         self.health = 10
         self.damage = 0
         self.speed = 10
-
 
 class CombatUnits(GameObject):
     pass
@@ -309,7 +303,7 @@ def main():
         tank_unit = Tank(x=30, y=40)
         archer_unit = Archer(x=50, y=60)
         glass_cannon_unit = GlassCannon(x=70, y=80)
-
+    
         units_list = [melee_unit, tank_unit, archer_unit, glass_cannon_unit]
         for unit in units_list:
             if 0 <= unit.y < map_units.shape[0] and 0 <= unit.x < map_units.shape[1]:
