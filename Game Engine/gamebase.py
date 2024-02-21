@@ -9,15 +9,26 @@ import sys
 
 class Map():
     def __init__(self):
-        self.terrainmap = np.load("./gamemaps/betamap2.npy")
-        self.mapsizex = (self.terrainmap).shape[1]
-        self.mapsizey = (self.terrainmap).shape[0]
+        
+        self.displaymap = np.load("./gamemaps/betamap2.npy")
+        self.terrainmap = self.displaymap
+        self.mapsizex = (self.displaymap).shape[1]
+        self.mapsizey = (self.displaymap).shape[0]
+        self.unitmap = np.zeros([self.mapsizey, self.mapsizex])
 
-        print(self.terrainmap)
+    
+    def coordinateList(self):
+        a = np.floor(np.arange(0,self.mapsizex*self.mapsizey,1) / (self.mapsizey))
+        b = np.tile(np.arange(0,self.mapsizey,1),self.mapsizex)
+        self.coordinateList = np.vstack((a,b)).T
+        print(b)
+
 
     def showMap(self):
 
+        self.displaymap = self.terrainmap * self.unitmap
         # Terrain types
+        # 0 = fog
         # 1 = water
         # 2 = sand
         # 3 = grass1
@@ -26,7 +37,7 @@ class Map():
         # 6 = stone2
         # 7 = stone3
         # 8 = stone4
-
+        fogcolor = np.array([0,0,0])
         desertcolor = np.array([255, 255, 0])
         grasscolor = np.array([0, 255, 0])
         deepgrasscolor = np.array([0, 200, 0])
@@ -39,32 +50,42 @@ class Map():
         imagearray = np.zeros([self.mapsizey, self.mapsizex, 3])
         currentx = 0
         currenty = 0
-        while currenty < (self.terrainmap).shape[0]:
-
-            if self.terrainmap[currenty, currentx] <= 1:
+        while currenty < (self.displaymap).shape[0]:
+            if self.displaymap[currenty, currentx] <= 0:
+                imagearray[currenty, currentx, :] = fogcolor
+            elif self.displaymap[currenty, currentx] <= 1:
                 imagearray[currenty, currentx, :] = watercolor
-            elif self.terrainmap[currenty, currentx] <= 2:
+            elif self.displaymap[currenty, currentx] <= 2:
                 imagearray[currenty, currentx, :] = desertcolor
-            elif self.terrainmap[currenty, currentx] <= 3:
+            elif self.displaymap[currenty, currentx] <= 3:
                 imagearray[currenty, currentx, :] = grasscolor
-            elif self.terrainmap[currenty, currentx] <= 4:
+            elif self.displaymap[currenty, currentx] <= 4:
                 imagearray[currenty, currentx, :] = deepgrasscolor
-            elif self.terrainmap[currenty, currentx] <= 5:
+            elif self.displaymap[currenty, currentx] <= 5:
                 imagearray[currenty, currentx, :] = stonecolor1
-            elif self.terrainmap[currenty, currentx] <= 6:
+            elif self.displaymap[currenty, currentx] <= 6:
                 imagearray[currenty, currentx, :] = stonecolor2
-            elif self.terrainmap[currenty, currentx] <= 7:
+            elif self.displaymap[currenty, currentx] <= 7:
                 imagearray[currenty, currentx, :] = stonecolor3
-            elif self.terrainmap[currenty, currentx] <= 8:
+            elif self.displaymap[currenty, currentx] <= 8:
                 imagearray[currenty, currentx, :] = stonecolor4
             currentx += 1
-            if currentx == (self.terrainmap).shape[1]:
+            if currentx == (self.displaymap).shape[1]:
                 currentx = 0
                 currenty += 1
 
         plt.imshow(imagearray.astype('uint8'))
         plt.show()
 
+    def resetUnitMap(self):
+        self.unitmap = np.zeros([self.mapsizey, self.mapsizex]) + 1
+
+    def updateUnitMapWithPosition(self,unit):
+        self.unitmap[unit.y,unit.x] = 0
+    
+
+
+    
 
 class Game():
     def __init__(self):
@@ -73,10 +94,76 @@ class Game():
 
 class Team():
     def __init__(self, mapIn):
-        self.visiblemap = np.zeros([mapIn.shape[0], mapIn.shape[1]])
+        self.visibleMap = np.zeros([mapIn.mapsizey, mapIn.mapsizex])
+        self.fogOfWarMap = np.zeros([mapIn.mapsizey, mapIn.mapsizex])
+        self.teamUnits = []
+        self.visibleUnits = []        
+
 
     def updateMap(self, mapIn):
+
+        self.visibleMap = self.fogOfWarMap * mapIn.displaymap
+
+    def createUnit(self,x,y,unitType):
+        self.teamUnits.append(Worker(50,50))
         pass
+
+    def showMap(self,mapIn):
+        # Terrain types
+        # 0 = fog
+        # 1 = water
+        # 2 = sand
+        # 3 = grass1
+        # 4 = grass2
+        # 5 = stone1
+        # 6 = stone2
+        # 7 = stone3
+        # 8 = stone4
+        fogcolor = np.array([0,0,0])
+        desertcolor = np.array([255, 255, 0])
+        grasscolor = np.array([0, 255, 0])
+        deepgrasscolor = np.array([0, 200, 0])
+        stonecolor1 = np.array([128, 128, 128])
+        stonecolor2 = np.array([160, 160, 160])
+        stonecolor3 = np.array([180, 180, 180])
+        stonecolor4 = np.array([200, 200, 200])
+        watercolor = np.array([0, 0, 255])
+
+        imagearray = np.zeros([mapIn.mapsizey, mapIn.mapsizex, 3])
+        currentx = 0
+        currenty = 0
+        while currenty < (self.visibleMap).shape[0]:
+            if self.visibleMap[currenty, currentx] <= 0:
+                imagearray[currenty, currentx, :] = fogcolor
+            elif self.visibleMap[currenty, currentx] <= 1:
+                imagearray[currenty, currentx, :] = watercolor
+            elif self.visibleMap[currenty, currentx] <= 2:
+                imagearray[currenty, currentx, :] = desertcolor
+            elif self.visibleMap[currenty, currentx] <= 3:
+                imagearray[currenty, currentx, :] = grasscolor
+            elif self.visibleMap[currenty, currentx] <= 4:
+                imagearray[currenty, currentx, :] = deepgrasscolor
+            elif self.visibleMap[currenty, currentx] <= 5:
+                imagearray[currenty, currentx, :] = stonecolor1
+            elif self.visibleMap[currenty, currentx] <= 6:
+                imagearray[currenty, currentx, :] = stonecolor2
+            elif self.visibleMap[currenty, currentx] <= 7:
+                imagearray[currenty, currentx, :] = stonecolor3
+            elif self.visibleMap[currenty, currentx] <= 8:
+                imagearray[currenty, currentx, :] = stonecolor4
+            currentx += 1
+            if currentx == (self.visibleMap).shape[1]:
+                currentx = 0
+                currenty += 1
+
+        plt.imshow(imagearray.astype('uint8'))
+        plt.show()
+
+
+
+
+
+        
 
 
 # Class Hierarchy - Units:
@@ -110,16 +197,17 @@ class Team():
 # GlassCannon:   Inherits from CombatUnits, a specialized combat unit with low health, high damage, speed, cooldown, and bulletSpeed.
 
 
-class GameObject:
+class GameObject():
     defaultHealth = 10
     x = 0
     y = 0
     canAttack = False
     dead = False
 
-    def __init__(self, team):
+    def __init__(self, x, y):
         self.health = self.defaultHealth
-        self.team = team
+        self.x = x
+        self.y = y
 
     def _lose_health(self, damage):
         self.health -= damage
@@ -141,30 +229,40 @@ class GameObject:
 
 class Units(GameObject):
 
-    def __init__(self, team):
-        super().__init__(team)
+    def __init__(self, x, y):
+        super().__init__(x,y)
         self.canAttack = True
         self.damage = 1
         self.speed = 1
         self.cooldown = 1
-        self.range = 1
-        self.vision_range = 1
+        self.range = 2
+        self.vision_range = 4
         self.action_queue = []
 
-    def _move_up(self):
+    def move_up(self,mapIn):
+        # if(mapIn[self.y-1,self.x]==1):
+            self.y-=1
+
+    def move_down(self,mapIn):
+        # if(mapIn[self.y+1,self.x]==1):
+            self.y+=1
+
+    def move_right(self,mapIn):
+        # if(mapIn[self.y,self.x+1]==1):
+            self.x+=1
+
+    def move_left(self,mapIn):
+        # if(mapIn[self.y,self.x-1]==1):
+            self.x-=1
+
+    def move_to(self):
         pass
 
-    def _move_down(self):
-        pass
+    def get_vision_coordinates(self):
 
-    def _move_right(self):
-        pass
+        visioncoordinates = np.vstack((np.tile(np.arange(-self.vision_range,self.vision_range+1,1),self.vision_range*2+1),np.floor(np.arange(0,(self.vision_range*2+1)**2,1) / (self.vision_range*2+1)) - self.vision_range)).T
 
-    def _move_left(self):
-        pass
-
-    def _move_to(self):
-        pass
+        print(visioncoordinates)
 
     def _attack(self, ennemy):
         # jsp quoi faire
@@ -173,12 +271,13 @@ class Units(GameObject):
 
 
 class UtilityUnits(Units):
-    pass
+    def __init__(self, x, y):
+        super().__init__(x,y)
 
 
 class Worker(UtilityUnits):
-    def __init__(self, x, y, team):
-        super().__init__(team)
+    def __init__(self, x, y):
+        super().__init__(x,y)
         self.x = x
         self.y = y
         self.health = 10
