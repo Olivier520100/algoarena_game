@@ -74,11 +74,10 @@ class Game():
 class Team():
     def __init__(self, mapIn):
         self.visiblemap = np.zeros([mapIn.shape[0], mapIn.shape[1]])
-        
-    
 
-    def updateMap(self,mapIn):
-        
+    def updateMap(self, mapIn):
+        pass
+
 
 # Class Hierarchy - Units:
 # ------------------------
@@ -141,7 +140,6 @@ class GameObject:
 
 
 class Units(GameObject):
-    
 
     def __init__(self, team):
         super().__init__(team)
@@ -149,8 +147,8 @@ class Units(GameObject):
         self.damage = 1
         self.speed = 1
         self.cooldown = 1
-        self.range=1
-        self.vision_range= 1
+        self.range = 1
+        self.vision_range = 1
         self.action_queue = []
 
     def _move_up(self):
@@ -164,14 +162,16 @@ class Units(GameObject):
 
     def _move_left(self):
         pass
+
     def _move_to(self):
         pass
-    def _attack(self,ennemy):
-        #jsp quoi faire
-        if(ennemy.pos<self.range):
+
+    def _attack(self, ennemy):
+        # jsp quoi faire
+        if (ennemy.pos < self.range):
             pass
 
-        
+
 class UtilityUnits(Units):
     pass
 
