@@ -9,7 +9,7 @@ import sys
 
 class Map():
     def __init__(self):
-        self.terrainmap = np.load("Game Engine/gamemaps/betamap2.npy")
+        self.terrainmap = np.load("./gamemaps/betamap2.npy")
         self.mapsizex = (self.terrainmap).shape[1]
         self.mapsizey = (self.terrainmap).shape[0]
 
@@ -72,8 +72,13 @@ class Game():
 
 
 class Team():
-    def __init__(self):
-        pass
+    def __init__(self, mapIn):
+        self.visiblemap = np.zeros([mapIn.shape[0], mapIn.shape[1]])
+        
+    
+
+    def updateMap(self,mapIn):
+        
 
 # Class Hierarchy - Units:
 # ------------------------
