@@ -1,0 +1,2 @@
+def play(teamvar):
+    pass
