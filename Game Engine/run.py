@@ -1,4 +1,6 @@
 import gamebase
+import player1
+import player2
 import time 
 
 print("starting")
