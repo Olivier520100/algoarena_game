@@ -1,14 +1,31 @@
 import gamebase
+import time 
 
+print("starting")
 gamemap = gamebase.Map()
+
 # gamemap.coordinateList()
 team1 = gamebase.Team(gamemap)
-team1.createUnit(12,12,"worker")
+print("gamebase created")
+
+# initial generation
 gamemap.resetUnitMap()
-gamemap.updateUnitMapWithPosition(team1.teamUnits[0])
 gamemap.showMap()
+print("map generated")
+
+# creating units (testing only)
+team1.createUnit(22,47, "worker")
+team1.createUnit(24, 47, "scout")
+print("units generated")
+gamemap.showMap()
+# gameloop
 while (True):
-    team1.teamUnits[0].move_up(gamemap)
-    gamemap.resetUnitMap()
-    gamemap.updateUnitMapWithPosition(team1.teamUnits[0])
+    print("looping")
     gamemap.showMap()
+    gamemap.resetUnitMap()
+    for unit in team1.teamUnits:
+        unit.move_up(gamemap)
+        gamemap.updateUnitMapWithPosition(unit)
+    team1.showMap(gamemap)
+
+    

@@ -10,7 +10,7 @@ import sys
 class Map():
     def __init__(self):
         
-        self.displaymap = np.load("./gamemaps/betamap2.npy")
+        self.displaymap = np.load("Game Engine\gamemaps\\betamap2.npy")
         self.terrainmap = self.displaymap
         self.mapsizex = (self.displaymap).shape[1]
         self.mapsizey = (self.displaymap).shape[0]
@@ -46,6 +46,8 @@ class Map():
         stonecolor3 = np.array([180, 180, 180])
         stonecolor4 = np.array([200, 200, 200])
         watercolor = np.array([0, 0, 255])
+        red_team_color = np.array([255, 0, 0])
+        purple_team_color = np.array([128, 0, 128])
 
         imagearray = np.zeros([self.mapsizey, self.mapsizex, 3])
         currentx = 0
@@ -69,6 +71,8 @@ class Map():
                 imagearray[currenty, currentx, :] = stonecolor3
             elif self.displaymap[currenty, currentx] <= 8:
                 imagearray[currenty, currentx, :] = stonecolor4
+            elif self.displaymap[currenty, currentx] >= 10:
+                imagearray[currenty, currentx, :] = red_team_color 
             currentx += 1
             if currentx == (self.displaymap).shape[1]:
                 currentx = 0
@@ -81,7 +85,7 @@ class Map():
         self.unitmap = np.zeros([self.mapsizey, self.mapsizex]) + 1
 
     def updateUnitMapWithPosition(self,unit):
-        self.unitmap[unit.y,unit.x] = 0
+        self.unitmap[unit.y,unit.x] = 10
     
 
 
@@ -105,7 +109,10 @@ class Team():
         self.visibleMap = self.fogOfWarMap * mapIn.displaymap
 
     def createUnit(self,x,y,unitType):
-        self.teamUnits.append(Worker(50,50))
+        if(unitType == "worker"):
+            self.teamUnits.append(Worker(x,y))
+        if(unitType == "scout"):
+            self.teamUnits.append(Scout(x,y))
         pass
 
     def showMap(self,mapIn):
@@ -128,6 +135,8 @@ class Team():
         stonecolor3 = np.array([180, 180, 180])
         stonecolor4 = np.array([200, 200, 200])
         watercolor = np.array([0, 0, 255])
+        red_team_color = np.array([255, 0, 0])
+        purple_team_color = np.array([128, 0, 128])
 
         imagearray = np.zeros([mapIn.mapsizey, mapIn.mapsizex, 3])
         currentx = 0
@@ -157,7 +166,7 @@ class Team():
                 currenty += 1
 
         plt.imshow(imagearray.astype('uint8'))
-        plt.show()
+        plt.draw()
 
 
 
@@ -240,7 +249,8 @@ class Units(GameObject):
         self.action_queue = []
 
     def move_up(self,mapIn):
-        # if(mapIn[self.y-1,self.x]==1):
+        print(self.y)
+        if(abs(self.y) <= abs(90)):
             self.y-=1
 
     def move_down(self,mapIn):
@@ -287,8 +297,8 @@ class Worker(UtilityUnits):
 
 
 class Scout(UtilityUnits):
-    def __init__(self, x, y, team):
-        super().__init__(team)
+    def __init__(self, x, y):
+        super().__init__(x, y)
         self.x = x
         self.y = y
         self.canAttack = False
