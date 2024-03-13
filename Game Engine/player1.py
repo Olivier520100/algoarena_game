@@ -1,4 +1,4 @@
 import gamebase
-def play(teamvar):
-
+def play(team_var):
+    
     pass

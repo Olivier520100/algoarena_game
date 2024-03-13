@@ -12,7 +12,7 @@ import numpy as np
 
 import sys
 
-
+import player1, player2
 
 
 
@@ -22,7 +22,7 @@ class Map():
 
         
 
-        self.displaymap = np.load("./gamemaps/betamap2.npy")
+        self.displaymap = np.load("Game Engine\gamemaps\\betamap2.npy")
 
         self.terrainmap = self.displaymap
 
@@ -196,15 +196,24 @@ class Team():
 
         self.teamUnits = []
 
-        self.visibleUnits = []        
+        self.visibleUnits = []    
 
+        self.unit_color =   []    
 
+    def lose():
+        #TODO
+        return False
 
+    def get_castle(self):
+        castle = self.teamUnits.__getitem__(type.__class__(Castle))
+
+        if castle is None:
+            print("no Castle found.")
+        else:
+            return castle
 
 
     def updateMap(self, mapIn):
-
-
 
         self.visibleMap = self.fogOfWarMap * mapIn.displaymap
 
@@ -257,6 +266,10 @@ class Team():
         stonecolor4 = np.array([200, 200, 200])
 
         watercolor = np.array([0, 0, 255])
+
+        red_team_color = np.array([255, 0, 0]) 
+
+        blue_team_color = np.array([128, 0, 200])
 
 
 
@@ -532,7 +545,6 @@ class Units(GameObject):
         visioncoordinates = np.vstack((np.tile(np.arange(-self.vision_range,self.vision_range+1,1),self.vision_range*2+1),np.floor(np.arange(0,(self.vision_range*2+1)**2,1) / (self.vision_range*2+1)) - self.vision_range)).T
 
 
-
         print(visioncoordinates)
 
 
@@ -757,7 +769,7 @@ class Castle(Building):
 
 
 
-    def _CreateWorker(x, y, team):
+    def CreateWorker(x, y, team):
 
         return Worker(x, y, team)
 
@@ -783,6 +795,8 @@ class Game:
 
     def __init__(self):
 
+        self.game_map = Map()
+
         self.map_units = np.full((90, 160), None)
 
         self.map_terrain = np.zeros((90, 160), dtype=int)
@@ -791,26 +805,31 @@ class Game:
 
         self.blue_units = []
 
+        self.team_red = Team(self.game_map)
 
-
-    def read_ai_input(self, ai_file):
-        pass
+        self.team_blue = Team(self.game_map)
 
 
 
     def update_game_state(self):
-        pass
+        self.game_map.updateUnitMapWithPosition
+        self.game_map.resetUnitMap
 
+         
 
+    def check_win_condition(self):
+        return self.team_red.lose() or self.team_blue.lose()
 
-    def main_loop(self, red_ai_file, blue_ai_file):
-        # temp
-        game_over = False
-        # temp
+    def main_loop(self):
+        
+        game_over = self.check_win_condition()
+        
+        self.team_red.createUnit(27, 27, "castle")
+        self.team_blue.createUnit(27, 77, "castle")
+
         while not game_over:
-            # Read and execute commands for red team
-            red_commands = self.read_ai_input(red_ai_file)
-            # Read and execute commands for blue team
-            blue_commands = self.read_ai_input(blue_ai_file)
+            player1.play(self.team_red)
+            player2.play(self.team_blue)
+
             # Update game state
             self.update_game_state()
