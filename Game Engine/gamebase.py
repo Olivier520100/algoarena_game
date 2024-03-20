@@ -24,7 +24,6 @@ class Map():
 
         self.displaymap = np.load("Game Engine\gamemaps\\betamap2.npy")
 
-        self.displaymap = np.load("Game Engine\gamemaps\\betamap2.npy")
         self.terrainmap = self.displaymap
 
         self.mapsizex = (self.displaymap).shape[1]
@@ -95,10 +94,6 @@ class Map():
 
         watercolor = np.array([0, 0, 255])
 
-        red_team_color = np.array([255, 0, 0])
-
-        blue_team_color = np.array([128, 0, 200])
-
 
 
         imagearray = np.zeros([self.mapsizey, self.mapsizex, 3])
@@ -144,8 +139,7 @@ class Map():
             elif self.displaymap[currenty, currentx] <= 8:
 
                 imagearray[currenty, currentx, :] = stonecolor4
-            elif self.displaymap[currenty, currentx] >= 10:
-                imagearray[currenty, currentx, :] = red_team_color 
+
             currentx += 1
 
             if currentx == (self.displaymap).shape[1]:
@@ -156,9 +150,9 @@ class Map():
 
 
 
-        plt.imshow(imagearray.astype('uint8'))
+        #plt.imshow(imagearray.astype('uint8'))
 
-        plt.show()
+        #plt.show()
 
 
 
@@ -169,9 +163,10 @@ class Map():
 
 
     def updateUnitMapWithPosition(self,unit):
-        self.unitmap[unit.y,unit.x] = 0
-    
 
+        self.unitmap[unit.y,unit.x] = 10
+
+    
 
 
 
@@ -210,13 +205,15 @@ class Team():
         return False
 
     def get_castle(self):
-        castle = self.teamUnits.__getitem__(type.__class__(Castle))
+        castle = self.teamUnits[0] (Castle)
 
         if castle is None:
             print("no Castle found.")
         else:
-            return castle
+            return castle 
 
+    def get_teamUnits(self):
+        return self.teamUnits
 
     def updateMap(self, mapIn):
 
@@ -224,11 +221,10 @@ class Team():
 
 
 
-    def createUnit(self,x,y,unitType):
-        if(unitType == "worker"):
-            self.teamUnits.append(Worker(x,y))
-        if(unitType == "scout"):
-            self.teamUnits.append(Scout(x,y))
+    def createUnit(self,x,y,team):
+
+        self.teamUnits.append(Worker(x,y, team))
+
         pass
 
 
@@ -323,6 +319,10 @@ class Team():
 
                 imagearray[currenty, currentx, :] = stonecolor4
 
+            elif self.visibleMap[currenty, currentx] >= 10:
+
+                imagearray[currenty, currentx, :] = red_team_color
+
             currentx += 1
 
             if currentx == (self.visibleMap).shape[1]:
@@ -333,8 +333,9 @@ class Team():
 
 
 
-        plt.imshow(imagearray.astype('uint8'))
-        plt.draw()
+        #plt.imshow(imagearray.astype('uint8'))
+
+        #plt.draw()
 
 
 
@@ -568,9 +569,10 @@ class Units(GameObject):
 
 class UtilityUnits(Units):
 
-    def __init__(self, x, y):
+    def __init__(self, x, y, team):
 
-        super().__init__(x,y)
+        super().__init__(x,y, team)
+        
 
 
 
@@ -578,9 +580,9 @@ class UtilityUnits(Units):
 
 class Worker(UtilityUnits):
 
-    def __init__(self, x, y):
+    def __init__(self, x, y, team):
 
-        super().__init__(x,y)
+        super().__init__(x,y, team)
 
         self.x = x
 
@@ -619,8 +621,11 @@ class Worker(UtilityUnits):
 
 
 class Scout(UtilityUnits):
-    def __init__(self, x, y):
-        super().__init__(x, y)
+
+    def __init__(self, x, y, team):
+
+        super().__init__(team)
+
         self.x = x
 
         self.y = y
